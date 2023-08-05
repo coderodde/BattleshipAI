@@ -20,28 +20,28 @@ public class ShipTest {
     private static void overlapHH(int length1, int length2) {
         Ship ship1= new Ship(length1, Ship.Orientation.HORIZONTAL);
         Ship ship2 = new Ship(length2, Ship.Orientation.HORIZONTAL);
-        runTest(ship1, ship2);
+        runOverlapTests(ship1, ship2);
     }
     
     private static void overlapHV(int length1, int length2) {
         Ship ship1= new Ship(length1, Ship.Orientation.HORIZONTAL);
         Ship ship2 = new Ship(length2, Ship.Orientation.VERTICAL);
-        runTest(ship1, ship2);
+        runOverlapTests(ship1, ship2);
     }
     
     private static void overlapVH(int length1, int length2) {
         Ship ship1= new Ship(length1, Ship.Orientation.VERTICAL);
         Ship ship2 = new Ship(length2, Ship.Orientation.HORIZONTAL);
-        runTest(ship1, ship2);
+        runOverlapTests(ship1, ship2);
     }
     
     private static void overlapVV(int length1, int length2) {
         Ship ship1= new Ship(length1, Ship.Orientation.VERTICAL);
         Ship ship2 = new Ship(length2, Ship.Orientation.VERTICAL);
-        runTest(ship1, ship2);
+        runOverlapTests(ship1, ship2);
     }
     
-    private static void runTest(Ship ship1, Ship ship2) {
+    private static void runOverlapTests(Ship ship1, Ship ship2) {
         for (int x1 = 0; x1 < 10; x1++) {
             ship1.setX(x1);
             

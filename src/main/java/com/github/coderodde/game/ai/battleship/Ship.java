@@ -11,11 +11,22 @@ import java.util.Set;
  * @version 1.6 (Aug 8, 2023)
  * @since 1.6 (Aug 8, 2023)
  */
-public final class Ship {
+public final class Ship implements Comparable<Ship> {
     
     public enum Orientation {
-        HORIZONTAL,
-        VERTICAL;
+        
+        HORIZONTAL ("Horizontal"),
+        VERTICAL   ("Vertical");
+        
+        private final String enumName;
+        
+        private Orientation(String enumName) {
+            this.enumName = enumName;
+        }
+        
+        public String toString() {
+            return enumName;
+        }
     }
     
     public final class ShipCompartment {
@@ -94,6 +105,24 @@ public final class Ship {
     @Override
     public int hashCode() {
         return Objects.hash(x, y, length, orientation);
+    }
+    
+    @Override
+    public int compareTo(Ship other) {
+        return length - other.length;
+    }
+    
+    @Override
+    public String toString() {
+        return "[Ship; x = " 
+                + x 
+                + ", y = " 
+                + y 
+                + ", length = " 
+                + length
+                + ", orientation = "
+                + orientation 
+                + "]";
     }
     
     public Set<ShipCompartment> convertToShipCompartments() {
