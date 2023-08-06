@@ -57,6 +57,35 @@ public final class FrequencyCounterMatrix {
         return new MatrixCoordinate(bestX, bestY);
     }
     
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        int maximumCounterLength = computeMaximumCounterLength();
+        int lineNumber = 1;
+        int totalLines = frequencyCounterMatrix.length;
+        
+        for (int[] row : frequencyCounterMatrix) {
+            load(sb, row, maximumCounterLength, lineNumber++, totalLines);
+        }
+        
+        return sb.toString();
+    }
+    
+    private int computeMaximumCounterLength() {
+        int tentativeMaximumLength = 0;
+        
+        for (int[] row : frequencyCounterMatrix) {
+            for (int entry : row) {
+                tentativeMaximumLength = 
+                        Math.max(
+                                tentativeMaximumLength,
+                                Integer.toString(entry).length());
+            }
+        }
+        
+        return tentativeMaximumLength;
+    }
+    
     private void incrementHorizontal(Ship ship) {
         for (int i = 0; i < ship.getLength(); i++) {
             increment(ship.getX() + i, ship.getY());
@@ -66,6 +95,24 @@ public final class FrequencyCounterMatrix {
     private void incrementVertical(Ship ship) {
         for (int i = 0; i < ship.getLength(); i++) {
             increment(ship.getX(), ship.getY() + i);
+        }
+    }
+    
+    private static void load(StringBuilder sb,
+                             int[] row, 
+                             int maximumEntryLength, 
+                             int lineNumber, 
+                             int totalNumbers) {
+        int rowLength = row.length;
+        int entryIndex = 0;
+        String format = "%" + maximumEntryLength + "d";
+        
+        for (int entry : row) {
+            sb.append(String.format(format, entry));
+            
+            if (++entryIndex < rowLength) {
+                
+            }
         }
     }
 }
