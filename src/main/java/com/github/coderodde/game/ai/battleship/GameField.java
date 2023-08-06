@@ -1,10 +1,8 @@
 package com.github.coderodde.game.ai.battleship;
 
-import com.github.coderodde.game.ai.battleship.Ship.ShipCompartment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class defines the game field for the Battleship game.
@@ -52,6 +50,15 @@ public final class GameField {
         return searchFleet.get(index);
     }
     
+    public Ship getShipAt(int x, int y) {
+        return shipMatrix[y][x];
+    }
+    
+    public void removeShip(Ship ship) {
+        
+        unprintShipFromShipMatrix(ship);
+    }
+    
     public boolean shipOccupiesClosedCell(Ship ship) {
         switch (ship.getOrientation()) {
             case HORIZONTAL:
@@ -79,24 +86,19 @@ public final class GameField {
     
     public void shoot(int x, int y) {
         gameFieldCellStateMatrix[y][x] = GameFieldCellState.SHOT;
-        
-        
     }
     
     public boolean shipIsDestroyed(Ship ship) {
-        Set<ShipCompartment> shipCompartments = 
-                ship.convertToShipCompartments();
-        
-        for (ShipCompartment shipCompartment : shipCompartments) {
-            int x = shipCompartment.x;
-            int y = shipCompartment.y;
-            
-            if (gameFieldCellStateMatrix[y][x] == GameFieldCellState.CLEAR) {
-                return false;
-            }
+        switch (ship.getOrientation()) {
+            case HORIZONTAL:
+                return horizontalShipIsDestroyed(ship);
+                
+            case VERTICAL:
+                return verticalShipIsDestroyed(ship);
+                
+            default:
+                throw new IllegalStateException("Should not get here.");
         }
-        
-        return true;
     }
     
     private void initializeGameFieldCellStateMatrix() {
@@ -195,6 +197,69 @@ public final class GameField {
             }
             
             shipMatrix[y][x] = ship;
+        }
+    }
+    
+    private boolean horizontalShipIsDestroyed(Ship ship) {
+        int x = ship.getX();
+        int y = ship.getY();
+        
+        for (int i = 0; i < ship.getLength(); i++) {
+            if (gameFieldCellStateMatrix[y][x + i] ==
+                    GameFieldCellState.CLEAR) {
+                
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    private boolean verticalShipIsDestroyed(Ship ship) {
+        int x = ship.getX();
+        int y = ship.getY();
+        
+        for (int i = 0; i < ship.getLength(); i++) {
+            if (gameFieldCellStateMatrix[y + i][x] == 
+                    GameFieldCellState.CLEAR) {
+                
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    private void unprintShipFromShipMatrix(Ship ship) {
+        switch (ship.getOrientation()) {
+            case HORIZONTAL:
+                unprintHorizontalShipFromShipMatrix(ship);
+                return;
+                
+            case VERTICAL:
+                unprintVerticalShipFromShipMatrix(ship);
+                return;
+                
+            default:
+                throw new IllegalStateException("Should not get here.");
+        }
+    }
+    
+    private void unprintHorizontalShipFromShipMatrix(Ship ship) {
+        int x = ship.getX();
+        int y = ship.getY();
+        
+        for (int i = 0; i < ship.getLength(); i++) {
+            shipMatrix[y][x + i] = null;
+        }
+    }
+    
+    private void unprintVerticalShipFromShipMatrix(Ship ship) {
+        int x = ship.getX();
+        int y = ship.getY();
+        
+        for (int i = 0; i < ship.getLength(); i++) {
+            shipMatrix[y + i][x] = null;
         }
     }
 }

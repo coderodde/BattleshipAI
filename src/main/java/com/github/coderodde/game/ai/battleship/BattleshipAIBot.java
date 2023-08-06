@@ -7,9 +7,16 @@ package com.github.coderodde.game.ai.battleship;
 public interface BattleshipAIBot {
     
     /**
-     * Performs a shoot attempt.
+     * Computes the most probable shot location.
      * 
      * @return the matrix coordinate.
      */
-    public MatrixCoordinate shoot(GameField gameField);
+    public MatrixCoordinate computeNextShotLocation(GameField gameField);
+    
+    /**
+     * Performs a shot.
+     * 
+     * @param matrixCoordinate the spot coordinates.
+     */
+    public void shoot(MatrixCoordinate matrixCoordinate);
 }
