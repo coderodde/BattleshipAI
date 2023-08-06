@@ -18,6 +18,11 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
     
     @Override
     public MatrixCoordinate shoot(GameField gameField) {
+        if (gameField.getFleet().isEmpty()) {
+            // Once here, the AI has found and destroyed all the ships:
+            return null;
+        }
+        
         frequencyCounterMatrix.clear();
         
         gameField.getFleet().sort(Ship::compareTo);
@@ -40,11 +45,61 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
         Ship targetShip = gameField.getFleet().get(shipIndex);
         targetShip.setOrientation(Ship.Orientation.HORIZONTAL);
         
-        putShipHorizontal(shipIndex + 1);
-        putShipVertical(shipIndex + 1);
+        for (int x = 0; 
+                x <= gameField.getWidth() - targetShip.getLength();
+                x++) {
+            
+            for (int y = 0; y < gameField.getHeight(); y++) {
+                if (gameField.shipOccupiesClosedCell(targetShip) &&
+                    targetShip.overlapsAny(gameField.getFleet())) {
+                    // The current target ship occupies a closed cell or 
+                    // overlaps some other ship in the fleet. Just omit placing
+                    // it:
+                    continue;
+                }
+                
+                targetShip.setLocation(x, y);
+                putShipHorizontal(shipIndex + 1);
+                putShipVertical(shipIndex + 1);
+            }
+        }
+        
+//        putShipHorizontal(shipIndex + 1);
+//        putShipVertical(shipIndex + 1);
     }
     
     private void putShipVertical(int shipIndex) {
+        if (shipIndex == gameField.getFleet().size()) {
+            // Once here, all the ships in the fleet are positioned.
+            return;
+        }
         
+        Ship targetShip = gameField.getFleet().get(shipIndex);
+        targetShip.setOrientation(Ship.Orientation.VERTICAL);
+        
+        for (int x = 0; x < gameField.getWidth(); x++) {
+            for (int y = 0; 
+                    y <= gameField.getHeight() - targetShip.getLength();
+                    y++) {
+                
+                if (gameField.shipOccupiesClosedCell(targetShip) &&
+                    targetShip.overlapsAny(gameField.getFleet())) {
+                    // The current target ship occupies a closed cell or 
+                    // overlaps some other ship in the fleet. Just omit placing
+                    // it:
+                    continue;
+                }
+                
+                targetShip.setLocation(x, y);
+                
+                
+                
+                putShipHorizontal(shipIndex + 1);
+                putShipVertical(shipIndex + 1);
+            }
+        }
+        
+//        putShipHorizontal(shipIndex + 1);
+//        putShipVertical(shipIndex + 1);
     }
 }

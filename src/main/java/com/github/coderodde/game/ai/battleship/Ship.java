@@ -1,6 +1,7 @@
 package com.github.coderodde.game.ai.battleship;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -58,6 +59,13 @@ public final class Ship implements Comparable<Ship> {
     public Ship(int length, Orientation orientation) {
         this.length = length;
         this.orientation = orientation;
+    }
+    
+    public Ship(Ship ship) {
+        this.x = ship.x;
+        this.y = ship.y;
+        this.length = ship.length;
+        this.orientation = ship.orientation;
     }
     
     public int getX() {
@@ -165,6 +173,16 @@ public final class Ship implements Comparable<Ship> {
         }
         
         throw new IllegalStateException("Should not get here.");
+    }
+    
+    public boolean overlapsAny(List<Ship> fleet) {
+        for (Ship ship : fleet) {
+            if (!ship.equals(this) && ship.overlap(this)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     public static boolean compartmentsOverlap(Ship ship1, Ship ship2) {

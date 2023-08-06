@@ -30,6 +30,21 @@ public final class FrequencyCounterMatrix {
         }
     }
     
+    public void increment(Ship ship) {
+        switch (ship.getOrientation()) {
+            case HORIZONTAL:
+                incrementHorizontal(ship);
+                return;
+                
+            case VERTICAL:
+                incrementVertical(ship);
+                return;
+                
+            default:
+                throw new IllegalStateException("Should not get here.");
+        }
+    }
+    
     public void clear() {
         for (int[] row : frequencyCounterMatrix) {
             Arrays.setAll(row, (op) -> 0);
@@ -40,5 +55,17 @@ public final class FrequencyCounterMatrix {
     
     public MatrixCoordinate getMaximumMatrixCounter() {
         return new MatrixCoordinate(bestX, bestY);
+    }
+    
+    private void incrementHorizontal(Ship ship) {
+        for (int i = 0; i < ship.getLength(); i++) {
+            increment(ship.getX() + i, ship.getY());
+        }
+    }
+    
+    private void incrementVertical(Ship ship) {
+        for (int i = 0; i < ship.getLength(); i++) {
+            increment(ship.getX(), ship.getY() + i);
+        }
     }
 }
