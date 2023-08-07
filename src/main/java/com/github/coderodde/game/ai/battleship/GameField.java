@@ -83,7 +83,7 @@ public final class GameField {
     }
     
     public List<Ship> getSearchFleet() {
-        return Collections.<Ship>unmodifiableList(searchFleet);
+        return searchFleet;
     }
     
     public int getWidth() {

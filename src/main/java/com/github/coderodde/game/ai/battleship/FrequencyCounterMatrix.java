@@ -1,6 +1,7 @@
 package com.github.coderodde.game.ai.battleship;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class represents the frequency counter matrix.
@@ -30,7 +31,7 @@ public final class FrequencyCounterMatrix {
         }
     }
     
-    public void increment(Ship ship) {
+    public void incrementShip(Ship ship) {
         switch (ship.getOrientation()) {
             case HORIZONTAL:
                 incrementHorizontal(ship);
@@ -42,6 +43,12 @@ public final class FrequencyCounterMatrix {
                 
             default:
                 throw new IllegalStateException("Should not get here.");
+        }
+    }
+    
+    public void incrementFleet(List<Ship> fleet) {
+        for (Ship ship : fleet) {
+            incrementShip(ship);
         }
     }
     

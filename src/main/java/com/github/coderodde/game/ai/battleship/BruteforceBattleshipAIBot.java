@@ -46,7 +46,6 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
         
         for (Ship s : gameField.getSearchFleet()) {
             s.setLocation(0, 0);
-            System.out.println(s);
         }
         
         putShipHorizontal(0);
@@ -54,9 +53,15 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
         return frequencyCounterMatrix.getMaximumMatrixCounter();
     }
     
+    public FrequencyCounterMatrix getFrequencyCounterMatrix() {
+        return frequencyCounterMatrix;
+    }
+    
     private void putShipHorizontal(int shipIndex) {
         if (shipIndex == gameField.getSearchFleet().size()) {
-            // Once here, all the ships in the fleet are positioned.
+            // Once here, all the ships in the fleet are positioned. Print them
+            // to the frequency counter matrix:
+            frequencyCounterMatrix.incrementFleet(gameField.getSearchFleet());
             return;
         }
         
@@ -89,7 +94,9 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
     
     private void putShipVertical(int shipIndex) {
         if (shipIndex == gameField.getSearchFleet().size()) {
-            // Once here, all the ships in the fleet are positioned.
+            // Once here, all the ships in the fleet are positioned. Print them
+            // to the frequency counter matrix:
+            frequencyCounterMatrix.incrementFleet(gameField.getSearchFleet());
             return;
         }
         

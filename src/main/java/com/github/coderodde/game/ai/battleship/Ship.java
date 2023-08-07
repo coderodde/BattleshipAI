@@ -30,7 +30,7 @@ public final class Ship implements Comparable<Ship> {
         }
     }
     
-    public final class ShipCompartment {
+    public static final class ShipCompartment {
         public final int x;
         public final int y;
         
