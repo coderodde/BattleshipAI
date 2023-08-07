@@ -28,6 +28,8 @@ public final class GameField {
     private final Ship[][] shipMatrix;
     private final List<Ship> searchFleet = new ArrayList<>();
     private final List<Ship> opponentFleet = new ArrayList<>();
+    
+    // The key ships of the following map must be effictely immutable:
     private final Map<Ship, Ship> mapOpponentShipToSearchShip = new HashMap<>();
     
     public GameField(int width, int height) {
@@ -62,8 +64,7 @@ public final class GameField {
     }
     
     public void removeShip(Ship ship) {
-        
-        searchFleet.remove(ship);
+        searchFleet.remove(mapOpponentShipToSearchShip.get(ship));
         opponentFleet.remove(ship);
         unprintShipFromShipMatrix(ship);
     }
@@ -81,7 +82,7 @@ public final class GameField {
         }
     }
     
-    public List<Ship> getFleet() {
+    public List<Ship> getSearchFleet() {
         return Collections.<Ship>unmodifiableList(searchFleet);
     }
     
