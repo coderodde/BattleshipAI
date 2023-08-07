@@ -65,7 +65,11 @@ public final class FrequencyCounterMatrix {
         int totalLines = frequencyCounterMatrix.length;
         
         for (int[] row : frequencyCounterMatrix) {
-            load(sb, row, maximumCounterLength, lineNumber++, totalLines);
+            load(sb,
+                 row,
+                 maximumCounterLength, 
+                 lineNumber++, 
+                 totalLines);
         }
         
         return sb.toString();
@@ -111,8 +115,12 @@ public final class FrequencyCounterMatrix {
             sb.append(String.format(format, entry));
             
             if (++entryIndex < rowLength) {
-                
+                sb.append(" ");
             }
+        }
+        
+        if (lineNumber < totalNumbers) {
+            sb.append("\n");
         }
     }
 }

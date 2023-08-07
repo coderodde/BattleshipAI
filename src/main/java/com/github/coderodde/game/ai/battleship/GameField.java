@@ -2,7 +2,9 @@ package com.github.coderodde.game.ai.battleship;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class defines the game field for the Battleship game.
@@ -26,6 +28,7 @@ public final class GameField {
     private final Ship[][] shipMatrix;
     private final List<Ship> searchFleet = new ArrayList<>();
     private final List<Ship> opponentFleet = new ArrayList<>();
+    private final Map<Ship, Ship> mapOpponentShipToSearchShip = new HashMap<>();
     
     public GameField(int width, int height) {
         this.width = width;
@@ -41,8 +44,12 @@ public final class GameField {
     
     public void addShip(Ship ship) {
         Ship opponentShip = new Ship(ship);
-        searchFleet.add(ship);
+        Ship searchShip = new Ship(ship);
+        
+        searchFleet.add(searchShip);
         opponentFleet.add(opponentShip);
+        mapOpponentShipToSearchShip.put(opponentShip, searchShip);
+        
         printShipToShipMatrix(opponentShip);
     }
     
@@ -56,6 +63,8 @@ public final class GameField {
     
     public void removeShip(Ship ship) {
         
+        searchFleet.remove(ship);
+        opponentFleet.remove(ship);
         unprintShipFromShipMatrix(ship);
     }
     
