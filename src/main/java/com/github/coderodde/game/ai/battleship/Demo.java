@@ -16,7 +16,48 @@ public final class Demo {
     private static final int GAME_FIELD_HEIGHT = 10;
     
     public static void main(String[] args) {
+        GameField bruteforceAIGameField = createGameField();
+        GameField randomAIGameField = new GameField(bruteforceAIGameField);
         
+        profile(new RandomBattleshipAIBot(randomAIGameField), 
+                randomAIGameField);
+        
+        profile(new BruteforceBattleshipAIBot(bruteforceAIGameField), 
+                bruteforceAIGameField);
+    }
+    
+    private static void profile(BattleshipAIBot bot, GameField gameField) {
+        System.out.println("Bot class: " + bot.getClass().getSimpleName());
+        long totalDuration = System.currentTimeMillis();
+        int shots = 0;
+        
+        while (!gameField.gameOver()) {
+            shots++;
+            
+            long computationDuration = System.currentTimeMillis();
+            
+            MatrixCoordinate matrixCoordinate = 
+                    bot.computeNextShotLocation(gameField);
+            
+            bot.shoot(matrixCoordinate);
+            
+            computationDuration = System.currentTimeMillis() 
+                                - computationDuration;
+            
+            System.out.printf(
+                    "Computation of the shot %2d took %d milliseconds\n", 
+                    shots, 
+                    computationDuration);
+        }
+        
+        totalDuration = System.currentTimeMillis() - totalDuration;
+        
+        System.out.println(
+                "Opponent destroyed in " 
+                        + shots 
+                        + " shots in " 
+                        + totalDuration 
+                        + " milliseconds.");
     }
     
     private static GameField createGameField() {

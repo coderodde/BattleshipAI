@@ -124,6 +124,10 @@ public final class GameField {
         }
     }
     
+    public boolean gameOver() {
+        return opponentFleet.isEmpty();
+    }
+    
     private void initializeGameFieldCellStateMatrix() {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
