@@ -50,6 +50,7 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
         
         putShipHorizontal(0);
         putShipVertical(0);
+        
         return frequencyCounterMatrix.getMaximumMatrixCounter();
     }
     
@@ -77,8 +78,7 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
                 
                 if (gameField.shipOccupiesClosedCell(targetShip) ||
                     targetShip.overlapsAny(
-                            gameField.getSearchFleet()
-                                     .subList(0, shipIndex))) {
+                            gameField.getSearchFleet().subList(0, shipIndex))) {
                     
                     // The current target ship occupies a closed cell or 
                     // overlaps some other ship in the fleet. Just omit placing
@@ -112,8 +112,7 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
                 
                 if (gameField.shipOccupiesClosedCell(targetShip) ||
                     targetShip.overlapsAny(
-                            gameField.getSearchFleet()
-                                     .subList(0, shipIndex))) {
+                            gameField.getSearchFleet().subList(0, shipIndex))) {
                     
                     // The current target ship occupies a closed cell or 
                     // overlaps some other ship in the fleet. Just omit placing

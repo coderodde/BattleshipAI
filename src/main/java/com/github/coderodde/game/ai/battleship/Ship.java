@@ -177,7 +177,7 @@ public final class Ship implements Comparable<Ship> {
     
     public boolean overlapsAny(List<Ship> fleet) {
         for (Ship ship : fleet) {
-            if (!ship.equals(this) && ship.overlap(this)) {
+            if (ship != this && ship.overlap(this)) {
                 return true;
             }
         }

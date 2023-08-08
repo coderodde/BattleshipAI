@@ -82,6 +82,10 @@ public final class FrequencyCounterMatrix {
         return sb.toString();
     }
     
+    public int getCounter(int x, int y) {
+        return frequencyCounterMatrix[y][x];
+    }
+    
     private int computeMaximumCounterLength() {
         int tentativeMaximumLength = 0;
         
