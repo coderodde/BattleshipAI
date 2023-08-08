@@ -83,4 +83,28 @@ public class BruteforceBattleshipAIBotTest {
         assertEquals(4, frequencyCounterMatrix.getCounter(1, 0));
         assertEquals(4, frequencyCounterMatrix.getCounter(1, 1));
     }
+    
+    @Test
+    public void test4() {
+        GameField gameField = new GameField(2, 2);
+        Ship ship1 = new Ship(2, Ship.Orientation.HORIZONTAL);
+        
+        gameField.addShip(ship1);
+        gameField.shoot(1, 0);
+        
+        BruteforceBattleshipAIBot bot =
+                new BruteforceBattleshipAIBot(gameField);
+        
+        bot.computeNextShotLocation(gameField);
+        
+        FrequencyCounterMatrix frequencyCounterMatrix = 
+                bot.getFrequencyCounterMatrix();
+        
+        System.out.println(frequencyCounterMatrix);
+        
+        assertEquals(2, frequencyCounterMatrix.getCounter(0, 0));
+        assertEquals(4, frequencyCounterMatrix.getCounter(0, 1));
+        assertEquals(0, frequencyCounterMatrix.getCounter(1, 0));
+        assertEquals(2, frequencyCounterMatrix.getCounter(1, 1));
+    }
 }

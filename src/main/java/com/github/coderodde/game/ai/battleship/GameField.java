@@ -1,7 +1,6 @@
 package com.github.coderodde.game.ai.battleship;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,10 @@ import java.util.Map;
  * @version 1.6 (Aug 5, 2023)
  */
 public final class GameField {
+    
+    public static final class ShipOverlapsWithExistingFleetException 
+            extends RuntimeException {
+    }
     
     public enum GameFieldCellState {
         CLEAR,
@@ -40,11 +43,21 @@ public final class GameField {
         initializeGameFieldCellStateMatrix();
     }
     
+    public GameField(GameField other) {
+        this.width = other.width;
+        this.height = other.height;
+        this.gameFieldCellStateMatrix = new GameFieldCellState[height][width];
+        this.shipMatrix = new Ship[height][width];
+        this.copyGameData(other);
+    }
+    
     public GameField() {
         this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
     
     public void addShip(Ship ship) {
+        checkDoesNotOverlapExistingShip(ship);
+        
         Ship opponentShip = new Ship(ship);
         Ship searchShip = new Ship(ship);
         
@@ -271,5 +284,45 @@ public final class GameField {
         for (int i = 0; i < ship.getLength(); i++) {
             shipMatrix[y + i][x] = null;
         }
+    }
+    
+    private void checkDoesNotOverlapExistingShip(Ship ship) {
+        for (Ship existingShip : opponentFleet) {
+            if (ship.overlap(existingShip)) {
+                throw new ShipOverlapsWithExistingFleetException();
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param copySourceGameField 
+     */
+    private void copyGameData(GameField copySourceGameField) {
+        for (Ship ship : copySourceGameField.getSearchFleet()) {
+            this.addShip(ship);
+        }
+//        for (int y = 0; y < height; y++) {
+//            for (int x = 0; x < width; x++) {
+//                this.gameFieldCellStateMatrix[y][x] =
+//                        copySourceGameField.gameFieldCellStateMatrix[y][x];
+//                
+//                this.shipMatrix[]
+//                copySourceGameField.shipMatrix[y][x] = this.shipMatrix[y][x];
+//            }
+//        }
+        
+//        for (Map.Entry<Ship, Ship> entry : 
+//                mapOpponentShipToSearchShip.entrySet()) {
+//            
+//            Ship opponentShip = new Ship(entry.getKey());
+//            Ship searchShip = new Ship(entry.getValue());
+//            
+//            copySourceGameField.opponentFleet.add(opponentShip);
+//            copySourceGameField.searchFleet.add(searchShip);
+//            
+//            copySourceGameField.mapOpponentShipToSearchShip
+//                               .put(opponentShip, searchShip);
+//        }
     }
 }
