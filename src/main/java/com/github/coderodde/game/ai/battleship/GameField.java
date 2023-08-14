@@ -56,6 +56,7 @@ public final class GameField {
     }
     
     public void addShip(Ship ship) {
+        checkShipFitsIn(ship);
         checkDoesNotOverlapExistingShip(ship);
         
         Ship opponentShip = new Ship(ship);
@@ -328,5 +329,36 @@ public final class GameField {
 //            copySourceGameField.mapOpponentShipToSearchShip
 //                               .put(opponentShip, searchShip);
 //        }
+    }
+    
+    private void checkShipFitsIn(Ship ship) {
+        switch (ship.getOrientation()) {
+            case HORIZONTAL:
+                if (ship.getLength() > width) {
+                    throw new IllegalArgumentException(
+                            "Horizontal ship is longer than the width of the " 
+                            + "game field. Ship length = " 
+                            + ship.getLength() 
+                            + ", game field width = " 
+                            + width);
+                }
+                
+                break;
+                
+            case VERTICAL:
+                if (ship.getLength() > height) {
+                    throw new IllegalArgumentException(
+                            "Vertical ship is longer than the height of the "
+                            + "gmae field. Ship length = "
+                            + ship.getLength() 
+                            + ", game field width = " 
+                            + height);
+                }
+                
+                break;
+                
+            default:
+                throw new IllegalStateException("Should not get here.");
+        }
     }
 }

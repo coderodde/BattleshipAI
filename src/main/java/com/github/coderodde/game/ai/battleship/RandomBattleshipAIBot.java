@@ -35,7 +35,7 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
     @Override
     public MatrixCoordinate computeNextShotLocation(GameField gameField) {
         if (shotCoordinates.isEmpty()) {
-            throw new GameOverException();
+            return null;
         }
         
         return shotCoordinates.remove(shotCoordinates.size() - 1);

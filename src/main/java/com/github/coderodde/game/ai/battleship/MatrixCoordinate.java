@@ -8,4 +8,14 @@ public final class MatrixCoordinate {
         this.x = x;
         this.y = y;
     }
+    
+    public MatrixCoordinate(MatrixCoordinate copy) {
+        this.x = copy.x;
+        this.y = copy.y;
+    }
+    
+    @Override
+    public String toString() {
+        return "[x = " + x + ", y = " + y + "]";
+    }
 }
