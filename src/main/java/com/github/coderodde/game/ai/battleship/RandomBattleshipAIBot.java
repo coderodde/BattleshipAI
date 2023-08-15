@@ -16,6 +16,7 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
 
     private final List<MatrixCoordinates> shotCoordinates;
     private final GameField gameField;
+    private FocusedBattleshipAIBot focusedBot;
     
     public RandomBattleshipAIBot(GameField gameField) {
         this.gameField = gameField;
@@ -38,7 +39,26 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
             return null;
         }
         
-        return shotCoordinates.remove(shotCoordinates.size() - 1);
+        if (focusedBot != null) {
+            MatrixCoordinates mc;
+            focusedBot.shoot(
+                    mc = focusedBot.computeNextShotLocation(gameField));
+            
+            return mc;
+        }
+        
+        MatrixCoordinates nextShotCoordinates =
+                shotCoordinates.get(shotCoordinates.size() - 1);
+        
+        Ship ship = gameField.getShipAt(nextShotCoordinates);
+        
+        if (ship != null) {
+            focusedBot = new FocusedBattleshipAIBot(ship, 
+                                                    nextShotCoordinates, 
+                                                    gameField);
+        }
+        
+        return nextShotCoordinates;
     }
 
     @Override
