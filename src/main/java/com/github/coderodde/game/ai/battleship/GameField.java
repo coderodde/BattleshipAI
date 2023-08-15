@@ -77,6 +77,11 @@ public final class GameField {
         return shipMatrix[y][x];
     }
     
+    public Ship getShipAt(MatrixCoordinates matrixCoordinates) {
+        return shipMatrix[matrixCoordinates.y]
+                         [matrixCoordinates.x];
+    }
+    
     public void removeShip(Ship ship) {
         searchFleet.remove(mapOpponentShipToSearchShip.get(ship));
         opponentFleet.remove(ship);

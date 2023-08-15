@@ -11,8 +11,7 @@ public class FocusedBattleshipAIBotTest {
         ship.setLocation(2, 1);
         gameField.addShip(ship);
         
-        gameField.shoot(2, 2);
-        MatrixCoordinate mc = new MatrixCoordinate(2, 2);
+        MatrixCoordinates mc = new MatrixCoordinates(2, 2);
         
         FocusedBattleshipAIBot bot = 
                 new FocusedBattleshipAIBot(
@@ -21,7 +20,7 @@ public class FocusedBattleshipAIBotTest {
                         gameField);
         
         bot.shoot(mc);
-        MatrixCoordinate next = bot.computeNextShotLocation(gameField);
+        MatrixCoordinates next = bot.computeNextShotLocation(gameField);
         
         System.out.println(next);
     }

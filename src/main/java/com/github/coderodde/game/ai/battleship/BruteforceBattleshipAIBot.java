@@ -17,7 +17,7 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
     }
 
     @Override
-    public void shoot(MatrixCoordinate matrixCoordinate) {
+    public void shoot(MatrixCoordinates matrixCoordinate) {
         gameField.shoot(matrixCoordinate.x,
                         matrixCoordinate.y);
         
@@ -34,7 +34,7 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
     }
     
     @Override
-    public MatrixCoordinate computeNextShotLocation(GameField gameField) {
+    public MatrixCoordinates computeNextShotLocation(GameField gameField) {
         if (gameField.getSearchFleet().isEmpty()) {
             // Once here, the AI has found and destroyed all the ships:
             return null;

@@ -34,7 +34,7 @@ public final class Demo {
         while (!gameField.gameOver()) {
             long computationDuration = System.currentTimeMillis();
             
-            MatrixCoordinate matrixCoordinate = 
+            MatrixCoordinates matrixCoordinate = 
                     bot.computeNextShotLocation(gameField);
             
             boolean exit = matrixCoordinate == null;

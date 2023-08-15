@@ -11,12 +11,12 @@ public interface BattleshipAIBot {
      * 
      * @return the matrix coordinate.
      */
-    public MatrixCoordinate computeNextShotLocation(GameField gameField);
+    public MatrixCoordinates computeNextShotLocation(GameField gameField);
     
     /**
      * Performs a shot.
      * 
      * @param matrixCoordinate the spot coordinates.
      */
-    public void shoot(MatrixCoordinate matrixCoordinate);
+    public void shoot(MatrixCoordinates matrixCoordinate);
 }

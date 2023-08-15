@@ -14,7 +14,7 @@ import java.util.Random;
  */
 public final class RandomBattleshipAIBot implements BattleshipAIBot {
 
-    private final List<MatrixCoordinate> shotCoordinates;
+    private final List<MatrixCoordinates> shotCoordinates;
     private final GameField gameField;
     
     public RandomBattleshipAIBot(GameField gameField) {
@@ -25,7 +25,7 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
         
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                shotCoordinates.add(new MatrixCoordinate(x, y));
+                shotCoordinates.add(new MatrixCoordinates(x, y));
             }
         }
         
@@ -33,7 +33,7 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
     }
     
     @Override
-    public MatrixCoordinate computeNextShotLocation(GameField gameField) {
+    public MatrixCoordinates computeNextShotLocation(GameField gameField) {
         if (shotCoordinates.isEmpty()) {
             return null;
         }
@@ -42,8 +42,10 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
     }
 
     @Override
-    public void shoot(MatrixCoordinate matrixCoordinate) {
+    public void shoot(MatrixCoordinates matrixCoordinate) {
         gameField.shoot(matrixCoordinate.x,
                         matrixCoordinate.y);
+        
+        
     }
 }

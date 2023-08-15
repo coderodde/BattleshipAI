@@ -1,7 +1,9 @@
 package com.github.coderodde.game.ai.battleship;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class implements the Battleship game AI bot that is focused to a 
@@ -27,6 +29,12 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
     private final List<Ship> focusedShipList = new ArrayList<>();
     
     /**
+     * Maps each ship to its orientation. If orientation for the ship {@code s}
+     * is not detected, {@code orientationMap.get(s)} equals {@code null}.
+     */
+    private final Map<Ship, Ship.Orientation> orientationMap = new HashMap<>();
+    
+    /**
      * The game field being operated on.
      */
     private final GameField gameField;
@@ -34,10 +42,8 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
     /**
      * The coordinates of the next shot.
      */
-    private MatrixCoordinate nextShotMatrixCoordinate = 
-            new MatrixCoordinate(0, 0);
-    
-    private Ship.Orientation detectedShipOrientation = null;
+    private MatrixCoordinates nextShotMatrixCoordinate = 
+            new MatrixCoordinates(0, 0);
     
     /**
      * Constructs a focused AI bot.
@@ -48,7 +54,7 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
      * @param gameField the game field storing the fleet.
      */
     public FocusedBattleshipAIBot(Ship initialFocusedShip,
-                                  MatrixCoordinate matrixCoordinate,
+                                  MatrixCoordinates matrixCoordinate,
                                   GameField gameField) {
         
         if (initialFocusedShip.getLength() < 1) {
@@ -64,7 +70,11 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         }
         
         this.gameField = gameField;
+        gameField.shoot(matrixCoordinate.x, 
+                        matrixCoordinate.y);
+        
         focusedShipList.add(initialFocusedShip);
+        orientationMap.put(initialFocusedShip, null);
         computeNextShotLocationImpl(matrixCoordinate);
     }
     
@@ -75,8 +85,8 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
      * @return the coordinates of the next favourable shot.
      */
     @Override
-    public MatrixCoordinate computeNextShotLocation(GameField gameField) {
-        return new MatrixCoordinate(this.nextShotMatrixCoordinate);
+    public MatrixCoordinates computeNextShotLocation(GameField gameField) {
+        return new MatrixCoordinates(this.nextShotMatrixCoordinate);
     }
 
     /**
@@ -85,7 +95,7 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
      * @param matrixCoordinate the coordinates at which to shoot.
      */
     @Override
-    public void shoot(MatrixCoordinate matrixCoordinate) {
+    public void shoot(MatrixCoordinates matrixCoordinate) {
         gameField.shoot(matrixCoordinate.x, 
                         matrixCoordinate.y);
         
@@ -117,13 +127,15 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         return focusedShipList.get(focusedShipList.size() - 1);
     }
     
-    private void computeNextShotLocationImpl(MatrixCoordinate shotCoordinates) {
+    private void computeNextShotLocationImpl(MatrixCoordinates shotCoordinates) {
         Ship ship = getLastFocusedShip();
         Ship searchShip = new Ship(ship);
         
         FrequencyCounterMatrix frequencyCounterMatrix = 
                 new FrequencyCounterMatrix(gameField.getWidth(),
                                            gameField.getHeight());
+        
+        Ship.Orientation detectedShipOrientation = orientationMap.get(ship);
         
         if (null == detectedShipOrientation) {
             searchHorizontally(frequencyCounterMatrix, 
@@ -134,14 +146,24 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
                              shotCoordinates, 
                              searchShip);
             
-            MatrixCoordinate mc = 
+            MatrixCoordinates mc = 
                     frequencyCounterMatrix.getMaximumMatrixCounter();
             
             Ship probeShip = gameField.getShipAt(mc.x, mc.y);
             
-            if (probeShip.equals(searchShip)) {
-                detectedShipOrientation = 
-                        detectOrientation(shotCoordinates, mc);
+            if (probeShip != null) {
+                if (!focusedShipList.contains(probeShip)) {
+                    focusedShipList.add(probeShip);
+                    orientationMap.put(probeShip, null);
+                } else {
+                    Ship.Orientation orientation = 
+                            tryInferOrientation(probeShip, 
+                                                shotCoordinates);
+                    
+                    if (orientation != null) {
+                        orientationMap.put(probeShip, orientation);
+                    }
+                }
             }
             
             return;
@@ -161,14 +183,16 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
             }
         }
         
-        MatrixCoordinate mc = frequencyCounterMatrix.getMaximumMatrixCounter();
-        this.nextShotMatrixCoordinate = new MatrixCoordinate(mc.x, mc.y);
+        MatrixCoordinates mc = frequencyCounterMatrix.getMaximumMatrixCounter();
+        this.nextShotMatrixCoordinate = new MatrixCoordinates(mc.x, mc.y);
     }
     
     private Ship.Orientation detectOrientation(
-            MatrixCoordinate shipCompartmentCoordinate1,
-            MatrixCoordinate shipCompartmentCoordinate2) {
-        int dx = shipCompartmentCoordinate1.x - shipCompartmentCoordinate2.x;
+            MatrixCoordinates shipCompartmentCoordinate1,
+            MatrixCoordinates shipCompartmentCoordinate2) {
+        
+        int dx = shipCompartmentCoordinate1.x - 
+                 shipCompartmentCoordinate2.x;
         
         return dx == 0 ? Ship.Orientation.VERTICAL : 
                          Ship.Orientation.HORIZONTAL;
@@ -176,7 +200,7 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
     
     private void searchHorizontally(
             FrequencyCounterMatrix frequencyCounterMatrix,
-            MatrixCoordinate shotCoordinates,
+            MatrixCoordinates shotCoordinates,
             Ship searchShip) {
         
         searchShip = new Ship(searchShip);
@@ -195,14 +219,15 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
             searchShip.setLocation(shipX, shipY);
             
             if (!overlapsFocusedShip(searchShip, opponentShip)) {
-                frequencyCounterMatrix.incrementShip(searchShip);
+                frequencyCounterMatrix.incrementShipExcept(searchShip, 
+                                                           shotCoordinates);
             }
         }
     }
     
     private void searchVertically(
             FrequencyCounterMatrix frequencyCounterMatrix,
-            MatrixCoordinate shotCoordinates,
+            MatrixCoordinates shotCoordinates,
             Ship searchShip) {
         
         searchShip = new Ship(searchShip);
@@ -221,7 +246,8 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
             searchShip.setLocation(shipX, shipY);
             
             if (!overlapsFocusedShip(searchShip, opponentShip)) {
-                frequencyCounterMatrix.incrementShip(searchShip);
+                frequencyCounterMatrix.incrementShipExcept(searchShip,
+                                                           shotCoordinates);
             }
         }
     }
@@ -241,4 +267,30 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         gameField.addShip(opponentShip);
         return false;
     }
+    
+    private Ship.Orientation 
+        tryInferOrientation(Ship probeShip, 
+                            MatrixCoordinates shotCoordinates) {
+        int x = shotCoordinates.x;
+        int y = shotCoordinates.y;
+        
+        if (gameField.getShipAt(x, y - 1) == probeShip) {
+            return Ship.Orientation.VERTICAL;
+        }
+        
+        if (gameField.getShipAt(x, y + 1) == probeShip) {
+            return Ship.Orientation.VERTICAL;
+        }
+        
+        if (gameField.getShipAt(x - 1, y) == probeShip) {
+            return Ship.Orientation.HORIZONTAL;
+        }
+        
+        if (gameField.getShipAt(x + 1, y) == probeShip) {
+            return Ship.Orientation.HORIZONTAL;
+        }
+        
+        return null;
+    }
+        
 }

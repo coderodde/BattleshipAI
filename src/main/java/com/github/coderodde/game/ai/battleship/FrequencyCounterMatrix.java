@@ -46,6 +46,21 @@ public final class FrequencyCounterMatrix {
         }
     }
     
+    public void incrementShipExcept(Ship ship, MatrixCoordinates mc) {
+        switch (ship.getOrientation()) {
+            case HORIZONTAL:
+                incrementHorizontalExcept(ship, mc);
+                return;
+                
+            case VERTICAL:
+                incrementVerticalExcept(ship, mc);
+                return;
+                
+            default:
+                throw new IllegalStateException("Should not get here.");
+        }
+    }
+    
     public void incrementFleet(List<Ship> fleet) {
         for (Ship ship : fleet) {
             incrementShip(ship);
@@ -60,8 +75,8 @@ public final class FrequencyCounterMatrix {
         bestCount = -1;
     }
     
-    public MatrixCoordinate getMaximumMatrixCounter() {
-        return new MatrixCoordinate(bestX, bestY);
+    public MatrixCoordinates getMaximumMatrixCounter() {
+        return new MatrixCoordinates(bestX, bestY);
     }
     
     @Override
@@ -110,6 +125,28 @@ public final class FrequencyCounterMatrix {
     private void incrementVertical(Ship ship) {
         for (int i = 0; i < ship.getLength(); i++) {
             increment(ship.getX(), ship.getY() + i);
+        }
+    }
+    
+    private void incrementHorizontalExcept(Ship ship, MatrixCoordinates mc) {
+        for (int i = 0; i < ship.getLength(); i++) {
+            int x = ship.getX() + i;
+            int y = ship.getY();
+            
+            if (x != mc.x || y != mc.y) {
+                increment(ship.getX() + i, ship.getY());
+            }
+        }
+    }
+    
+    private void incrementVerticalExcept(Ship ship, MatrixCoordinates mc) {
+        for (int i = 0; i < ship.getLength(); i++) {
+            int x = ship.getX();
+            int y = ship.getY() + i;
+            
+            if (x != mc.x || y != mc.y) {
+                increment(ship.getX(), ship.getY() + i);
+            }
         }
     }
     
