@@ -96,6 +96,19 @@ public final class GameField {
         }
     }
     
+    public boolean shipOccupiesAnotherShip(Ship ship) {
+        switch (ship.getOrientation()) {
+            case HORIZONTAL:
+                return horizonalShipOccupiesAnotherShip(ship);
+                
+            case VERTICAL:
+                return verticalShipOccupiesAnotherShip(ship);
+                
+            default:
+                throw new IllegalStateException("Should not get here.");
+        }
+    }
+    
     public List<Ship> getSearchFleet() {
         return searchFleet;
     }
@@ -360,5 +373,29 @@ public final class GameField {
             default:
                 throw new IllegalStateException("Should not get here.");
         }
+    }
+    
+    private boolean horizonalShipOccupiesAnotherShip(Ship ship) {
+        for (int i = 0; i < ship.getLength(); i++) {
+            Ship s = shipMatrix[ship.getY()][ship.getX() + i];
+            
+            if (s != null) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private boolean verticalShipOccupiesAnotherShip(Ship ship) {
+        for (int i = 0; i < ship.getLength(); i++) {
+            Ship s = shipMatrix[ship.getY() + i][ship.getX()];
+            
+            if (s != null) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

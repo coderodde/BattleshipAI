@@ -1,2 +1,3 @@
 com\github\coderodde\game\ai\battleship\ShipTest.class
 com\github\coderodde\game\ai\battleship\BruteforceBattleshipAIBotTest.class
+com\github\coderodde\game\ai\battleship\FocusedBattleshipAIBotTest.class

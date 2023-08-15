@@ -13,10 +13,10 @@ import java.util.List;
  */
 public final class FocusedBattleshipAIBot implements BattleshipAIBot {
 
-    public static final class FocusedShipDestroyedException 
+    public static final class FocusedFleetDestroyedException 
             extends RuntimeException {
         
-        public FocusedShipDestroyedException(String exceptionMessage) {
+        public FocusedFleetDestroyedException(String exceptionMessage) {
             super(exceptionMessage);
         }
     }
@@ -37,6 +37,8 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
     private MatrixCoordinate nextShotMatrixCoordinate = 
             new MatrixCoordinate(0, 0);
     
+    private Ship.Orientation detectedShipOrientation = null;
+    
     /**
      * Constructs a focused AI bot.
      * 
@@ -49,13 +51,20 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
                                   MatrixCoordinate matrixCoordinate,
                                   GameField gameField) {
         
+        if (initialFocusedShip.getLength() < 1) {
+            throw new IllegalArgumentException(
+                    "The input ship has length " 
+                            + initialFocusedShip.getLength() 
+                            + ", must be at least 1.");
+        }
+        
         if (initialFocusedShip.getLength() == 1) {
-            throw new FocusedShipDestroyedException(
+            throw new FocusedFleetDestroyedException(
                     "Ship " + initialFocusedShip + " is destroyed.");
         }
         
-        focusedShipList.add(initialFocusedShip);
         this.gameField = gameField;
+        focusedShipList.add(initialFocusedShip);
         computeNextShotLocationImpl(matrixCoordinate);
     }
     
@@ -89,16 +98,15 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         }
         
         if (gameField.shipIsDestroyed(ship)) {
-            removeLastFocusedShip();
+            focusedShipList.remove(ship);
             
             if (focusedShipList.isEmpty()) {
-                throw new FocusedShipDestroyedException("Ship is destroyed.");
+                throw new FocusedFleetDestroyedException(
+                        "Focused fleet is destroyed.");
             }
         }
         
-        Ship lastFocusedShip = getLastFocusedShip();
-        
-        if (!ship.equals(lastFocusedShip)) {
+        if (!focusedShipList.contains(ship)) {
             focusedShipList.add(ship);
         }
         
@@ -107,10 +115,6 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
     
     private Ship getLastFocusedShip() {
         return focusedShipList.get(focusedShipList.size() - 1);
-    }
-
-    private void removeLastFocusedShip() {
-        focusedShipList.remove(focusedShipList.size() - 1);
     }
     
     private void computeNextShotLocationImpl(MatrixCoordinate shotCoordinates) {
@@ -121,12 +125,53 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
                 new FrequencyCounterMatrix(gameField.getWidth(),
                                            gameField.getHeight());
         
-        searchHorizontally(frequencyCounterMatrix, shotCoordinates, searchShip);
-        searchVertically(frequencyCounterMatrix, shotCoordinates, searchShip);
+        if (null == detectedShipOrientation) {
+            searchHorizontally(frequencyCounterMatrix, 
+                               shotCoordinates, 
+                               searchShip);
+            
+            searchVertically(frequencyCounterMatrix, 
+                             shotCoordinates, 
+                             searchShip);
+            
+            MatrixCoordinate mc = 
+                    frequencyCounterMatrix.getMaximumMatrixCounter();
+            
+            Ship probeShip = gameField.getShipAt(mc.x, mc.y);
+            
+            if (probeShip.equals(searchShip)) {
+                detectedShipOrientation = 
+                        detectOrientation(shotCoordinates, mc);
+            }
+            
+            return;
+            
+        } else switch (detectedShipOrientation) {
+            
+            case HORIZONTAL -> {
+                searchHorizontally(frequencyCounterMatrix,
+                                   shotCoordinates,
+                                   searchShip);
+            }
+            
+            default -> {
+                searchVertically(frequencyCounterMatrix,
+                                 shotCoordinates,
+                                 searchShip);
+            }
+        }
         
         MatrixCoordinate mc = frequencyCounterMatrix.getMaximumMatrixCounter();
-        
         this.nextShotMatrixCoordinate = new MatrixCoordinate(mc.x, mc.y);
+    }
+    
+    private Ship.Orientation detectOrientation(
+            MatrixCoordinate shipCompartmentCoordinate1,
+            MatrixCoordinate shipCompartmentCoordinate2) {
+        int dx = shipCompartmentCoordinate1.x - shipCompartmentCoordinate2.x;
+        
+        return dx == 0 ? Ship.Orientation.VERTICAL : 
+                         Ship.Orientation.HORIZONTAL;
     }
     
     private void searchHorizontally(
@@ -136,19 +181,20 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         
         searchShip = new Ship(searchShip);
         searchShip.setOrientation(Ship.Orientation.HORIZONTAL);
+        Ship opponentShip = gameField.getShipAt(shotCoordinates.x,
+                                                shotCoordinates.y);
         
         for (int i = 0; i < searchShip.getLength(); i++) {
             int shipX = shotCoordinates.x - i;
+            int shipY = shotCoordinates.y;
             
             if (shipX < 0) {
                 break;
             }
             
-            searchShip.setX(shipX);
+            searchShip.setLocation(shipX, shipY);
             
-            if (!gameField.shipOccupiesClosedCell(searchShip) && 
-                !overlapsFocusedShip(searchShip)) {
-                
+            if (!overlapsFocusedShip(searchShip, opponentShip)) {
                 frequencyCounterMatrix.incrementShip(searchShip);
             }
         }
@@ -161,32 +207,38 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         
         searchShip = new Ship(searchShip);
         searchShip.setOrientation(Ship.Orientation.VERTICAL);
+        Ship opponentShip = gameField.getShipAt(shotCoordinates.x,
+                                                shotCoordinates.y);
         
         for (int i = 0; i < searchShip.getLength(); i++) {
+            int shipX = shotCoordinates.x;
             int shipY = shotCoordinates.y - i;
             
             if (shipY < 0) {
                 break;
             }
             
-            searchShip.setY(shipY);
+            searchShip.setLocation(shipX, shipY);
             
-            if (!gameField.shipOccupiesClosedCell(searchShip) &&
-                !overlapsFocusedShip(searchShip)) {
-                
+            if (!overlapsFocusedShip(searchShip, opponentShip)) {
                 frequencyCounterMatrix.incrementShip(searchShip);
             }
         }
     }
     
-    private boolean overlapsFocusedShip(Ship searchShip) {
+    private boolean overlapsFocusedShip(Ship searchShip, Ship opponentShip) {
+        gameField.removeShip(opponentShip);
+        
         for (Ship focusedShip : focusedShipList) {
             if (!focusedShip.equals(searchShip) &&
-                 focusedShip.overlap(searchShip)) {
+                gameField.shipOccupiesAnotherShip(focusedShip)) {
+                
+                gameField.addShip(opponentShip);
                 return true;
             }
         }
         
+        gameField.addShip(opponentShip);
         return false;
     }
 }

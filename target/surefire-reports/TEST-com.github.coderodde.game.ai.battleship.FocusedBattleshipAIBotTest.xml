@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.github.coderodde.game.ai.battleship.BruteforceBattleshipAIBotTest" time="0.18" tests="4" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest" time="0.003" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="20"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -60,24 +60,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="64.0"/>
   </properties>
-  <testcase name="test1" classname="com.github.coderodde.game.ai.battleship.BruteforceBattleshipAIBotTest" time="0.047">
-    <system-out><![CDATA[8 8
-8 8
-]]></system-out>
-  </testcase>
-  <testcase name="test2" classname="com.github.coderodde.game.ai.battleship.BruteforceBattleshipAIBotTest" time="0.002">
-    <system-out><![CDATA[6 8 6
-6 8 6
-]]></system-out>
-  </testcase>
-  <testcase name="test3" classname="com.github.coderodde.game.ai.battleship.BruteforceBattleshipAIBotTest" time="0.008">
-    <system-out><![CDATA[4 4
-4 4
-]]></system-out>
-  </testcase>
-  <testcase name="test4" classname="com.github.coderodde.game.ai.battleship.BruteforceBattleshipAIBotTest" time="0.001">
-    <system-out><![CDATA[2 0
-4 2
+  <testcase name="test1" classname="com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest" time="0.002">
+    <system-out><![CDATA[[x = 0, y = 0]
 ]]></system-out>
   </testcase>
 </testsuite>
