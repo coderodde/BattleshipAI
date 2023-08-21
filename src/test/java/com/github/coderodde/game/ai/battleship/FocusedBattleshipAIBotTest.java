@@ -20,7 +20,7 @@ public class FocusedBattleshipAIBotTest {
                         gameField);
         
         bot.shoot(mc);
-        MatrixCoordinates next = bot.computeNextShotLocation(gameField);
+        MatrixCoordinates next = bot.computeNextShotLocation();
         
         System.out.println(next);
     }

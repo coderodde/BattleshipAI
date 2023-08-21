@@ -85,7 +85,7 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
      * @return the coordinates of the next favourable shot.
      */
     @Override
-    public MatrixCoordinates computeNextShotLocation(GameField gameField) {
+    public MatrixCoordinates computeNextShotLocation() {
         return new MatrixCoordinates(this.nextShotMatrixCoordinate);
     }
 

@@ -19,7 +19,7 @@ public class BruteforceBattleshipAIBotTest {
         BruteforceBattleshipAIBot bot =
                 new BruteforceBattleshipAIBot(gameField);
         
-        bot.computeNextShotLocation(gameField);
+        bot.computeNextShotLocation();
         
         FrequencyCounterMatrix frequencyCounterMatrix = 
                 bot.getFrequencyCounterMatrix();
@@ -46,7 +46,7 @@ public class BruteforceBattleshipAIBotTest {
         BruteforceBattleshipAIBot bot =
                 new BruteforceBattleshipAIBot(gameField);
         
-        bot.computeNextShotLocation(gameField);
+        bot.computeNextShotLocation();
         
         FrequencyCounterMatrix frequencyCounterMatrix = 
                 bot.getFrequencyCounterMatrix();
@@ -71,7 +71,7 @@ public class BruteforceBattleshipAIBotTest {
         BruteforceBattleshipAIBot bot =
                 new BruteforceBattleshipAIBot(gameField);
         
-        bot.computeNextShotLocation(gameField);
+        bot.computeNextShotLocation();
         
         FrequencyCounterMatrix frequencyCounterMatrix = 
                 bot.getFrequencyCounterMatrix();
@@ -95,7 +95,7 @@ public class BruteforceBattleshipAIBotTest {
         BruteforceBattleshipAIBot bot =
                 new BruteforceBattleshipAIBot(gameField);
         
-        bot.computeNextShotLocation(gameField);
+        bot.computeNextShotLocation();
         
         FrequencyCounterMatrix frequencyCounterMatrix = 
                 bot.getFrequencyCounterMatrix();

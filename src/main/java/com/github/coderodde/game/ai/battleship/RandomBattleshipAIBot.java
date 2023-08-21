@@ -16,6 +16,7 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
 
     private final List<MatrixCoordinates> shotCoordinates;
     private final GameField gameField;
+    private final Random random = new Random();
     private FocusedBattleshipAIBot focusedBot;
     
     public RandomBattleshipAIBot(GameField gameField) {
@@ -23,10 +24,16 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
         int width = gameField.getWidth();
         int height = gameField.getHeight();
         this.shotCoordinates = new ArrayList<>(width * height);
+        boolean include = random.nextBoolean();
         
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                shotCoordinates.add(new MatrixCoordinates(x, y));
+                if (include) {
+                    include = false;
+                    shotCoordinates.add(new MatrixCoordinates(x, y));
+                } else {
+                    include = true;
+                }
             }
         }
         
@@ -34,16 +41,10 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
     }
     
     @Override
-    public MatrixCoordinates computeNextShotLocation(GameField gameField) {
-        if (shotCoordinates.isEmpty()) {
-            return null;
-        }
-        
+    public MatrixCoordinates computeNextShotLocation() {
         if (focusedBot != null) {
             MatrixCoordinates mc;
-            focusedBot.shoot(
-                    mc = focusedBot.computeNextShotLocation(gameField));
-            
+            focusedBot.shoot(mc = focusedBot.computeNextShotLocation());
             return mc;
         }
         

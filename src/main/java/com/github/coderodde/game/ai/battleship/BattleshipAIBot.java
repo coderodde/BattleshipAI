@@ -2,7 +2,10 @@ package com.github.coderodde.game.ai.battleship;
 
 /**
  * This class defines the interface for the Battleship game AI bots.
- * @author rodio
+ * 
+ * @author Rodion "rodde" Efremov
+ * @version 1.6 (Aug 21, 2023)
+ * @since 1.6 (Aug 21, 2023)
  */
 public interface BattleshipAIBot {
     
@@ -11,12 +14,12 @@ public interface BattleshipAIBot {
      * 
      * @return the matrix coordinate.
      */
-    public MatrixCoordinates computeNextShotLocation(GameField gameField);
+    public MatrixCoordinates computeNextShotLocation();
     
     /**
      * Performs a shot.
      * 
-     * @param matrixCoordinate the spot coordinates.
+     * @param matrixCoordinates the shooting spot coordinates.
      */
-    public void shoot(MatrixCoordinates matrixCoordinate);
+    public void shoot(MatrixCoordinates matrixCoordinates);
 }

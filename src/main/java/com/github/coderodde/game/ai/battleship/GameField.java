@@ -88,6 +88,10 @@ public final class GameField {
         unprintShipFromShipMatrix(ship);
     }
     
+    public boolean fleetDestroyed() {
+        return opponentFleet.isEmpty();
+    }
+    
     public boolean shipOccupiesClosedCell(Ship ship) {
         switch (ship.getOrientation()) {
             case HORIZONTAL:

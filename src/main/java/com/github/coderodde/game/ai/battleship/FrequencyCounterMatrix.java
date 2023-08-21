@@ -1,7 +1,9 @@
 package com.github.coderodde.game.ai.battleship;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * This class represents the frequency counter matrix.
@@ -12,61 +14,113 @@ import java.util.List;
  */
 public final class FrequencyCounterMatrix {
     
+    /**
+     * The actual frequency counter matrix.
+     */
     private final int[][] frequencyCounterMatrix;
-    private int bestX;
-    private int bestY;
+    
+    /**
+     * The pseudo-random number generator. Used for resolving ties.
+     */
+    private final Random random = new Random();
+    
+    /**
+     * List of best coordinate pairs.
+     */
+    private final List<MatrixCoordinates> bestCoordinates = new ArrayList<>();
+    
+    /**
+     * The best count so far.
+     */
     private int bestCount = -1;
     
+    /**
+     * Constructs this frequency counter matrix.
+     * 
+     * @param width  the width of the matrix.
+     * @param height the height of the matrix.
+     */
     public FrequencyCounterMatrix(int width, int height) {
         this.frequencyCounterMatrix = new int[height][width];
     }
     
+    /**
+     * Increments the matrix cell by one at coordinates {@code (x, y)}.
+     * 
+     * @param x the X-coordinate of the cell.
+     * @param y the Y-coordinate of the cell.
+     */
     public void increment(int x, int y) {
         frequencyCounterMatrix[y][x]++;
         
         if (frequencyCounterMatrix[y][x] > bestCount) {
+            // Found new best spot:
             bestCount = frequencyCounterMatrix[y][x];
-            bestX = x;
-            bestY = y;
+            bestCoordinates.clear();
+            bestCoordinates.add(new MatrixCoordinates(x, y));
+        } else if (frequencyCounterMatrix[y][x] == bestCount) {
+            // Adding a tie:
+            bestCoordinates.add(new MatrixCoordinates(x, y));
         }
     }
     
+    /**
+     * Increments all the cells occupied by {@code ship}.
+     * 
+     * @param ship the ship to increment.
+     */
     public void incrementShip(Ship ship) {
         switch (ship.getOrientation()) {
-            case HORIZONTAL:
+            case HORIZONTAL -> {
                 incrementHorizontal(ship);
                 return;
+            }
                 
-            case VERTICAL:
+            case VERTICAL -> {
                 incrementVertical(ship);
                 return;
+            }
                 
-            default:
-                throw new IllegalStateException("Should not get here.");
+            default -> throw new IllegalStateException("Should not get here.");
         }
     }
     
+    /**
+     * Increments the ship except the cell with coordinates {@code mc}.
+     * 
+     * @param ship the ship to increment.
+     * @param mc   the coordinate to exclude.
+     */
     public void incrementShipExcept(Ship ship, MatrixCoordinates mc) {
         switch (ship.getOrientation()) {
-            case HORIZONTAL:
+            case HORIZONTAL -> {
                 incrementHorizontalExcept(ship, mc);
                 return;
+            }
                 
-            case VERTICAL:
+            case VERTICAL -> {
                 incrementVerticalExcept(ship, mc);
                 return;
+            }
                 
-            default:
-                throw new IllegalStateException("Should not get here.");
+            default -> throw new IllegalStateException("Should not get here.");
         }
     }
     
+    /**
+     * Increments the entire ship.
+     * 
+     * @param fleet the fleet to increment.
+     */
     public void incrementFleet(List<Ship> fleet) {
         for (Ship ship : fleet) {
             incrementShip(ship);
         }
     }
     
+    /**
+     * Clears the entire matrix.
+     */
     public void clear() {
         for (int[] row : frequencyCounterMatrix) {
             Arrays.setAll(row, (op) -> 0);
@@ -75,10 +129,20 @@ public final class FrequencyCounterMatrix {
         bestCount = -1;
     }
     
+    /**
+     * Returns one of the most favourable cell coordinates randomly.
+     * 
+     * @return one of the most favourable cell coordinates.
+     */
     public MatrixCoordinates getMaximumMatrixCounter() {
-        return new MatrixCoordinates(bestX, bestY);
+        return bestCoordinates.get(random.nextInt(bestCoordinates.size()));
     }
     
+    /**
+     * Returns the textual representation of this frequency counter matrix.
+     * 
+     * @return the textual representation of this matrix.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -97,10 +161,23 @@ public final class FrequencyCounterMatrix {
         return sb.toString();
     }
     
+    /**
+     * Gets the count at coordinates {@code (x, y)}.
+     * 
+     * @param x the {@code X}-coordinate of the cell.
+     * @param y the {@code Y}-coordinate of the cell.
+     * 
+     * @return the count at the specified cell.
+     */
     public int getCounter(int x, int y) {
         return frequencyCounterMatrix[y][x];
     }
     
+    /**
+     * Computes and returns the maximum length of a counter in characters.
+     * 
+     * @return the maximum length of a counter in characters.
+     */
     private int computeMaximumCounterLength() {
         int tentativeMaximumLength = 0;
         
@@ -116,18 +193,35 @@ public final class FrequencyCounterMatrix {
         return tentativeMaximumLength;
     }
     
+    /**
+     * Increments a <b>horizontal</b> ship.
+     * 
+     * @param ship the ship to increment.
+     */
     private void incrementHorizontal(Ship ship) {
         for (int i = 0; i < ship.getLength(); i++) {
             increment(ship.getX() + i, ship.getY());
         }
     }
     
+    /**
+     * Increments a <b>vertical</b> ship.
+     * 
+     * @param ship the ship to increment.
+     */
     private void incrementVertical(Ship ship) {
         for (int i = 0; i < ship.getLength(); i++) {
             increment(ship.getX(), ship.getY() + i);
         }
     }
     
+    /**
+     * Increments a <b>horizontal</b> ship except the cell at coordinates 
+     * {@code mc}.
+     * 
+     * @param ship the ship to increment.
+     * @param mc   the coordinates of a cell to exclude.
+     */
     private void incrementHorizontalExcept(Ship ship, MatrixCoordinates mc) {
         for (int i = 0; i < ship.getLength(); i++) {
             int x = ship.getX() + i;
@@ -139,6 +233,13 @@ public final class FrequencyCounterMatrix {
         }
     }
     
+    /**
+     * Increments a <b>vertical</b> ship except the cell at coordinates 
+     * {@code mc}.
+     * 
+     * @param ship the ship to increment.
+     * @param mc   the coordinates of a cell to exclude.
+     */
     private void incrementVerticalExcept(Ship ship, MatrixCoordinates mc) {
         for (int i = 0; i < ship.getLength(); i++) {
             int x = ship.getX();
@@ -150,11 +251,20 @@ public final class FrequencyCounterMatrix {
         }
     }
     
+    /**
+     * Loads a matrix row into a string builder.
+     * 
+     * @param sb                 the target string builder.
+     * @param row                the row to load.
+     * @param maximumEntryLength the maximum length of an entry in characters.
+     * @param lineNumber         the line number of the {@code row}.
+     * @param totalRows          the total number of rows in the matrix. 
+     */
     private static void load(StringBuilder sb,
                              int[] row, 
                              int maximumEntryLength, 
                              int lineNumber, 
-                             int totalNumbers) {
+                             int totalRows) {
         int rowLength = row.length;
         int entryIndex = 0;
         String format = "%" + maximumEntryLength + "d";
@@ -167,7 +277,7 @@ public final class FrequencyCounterMatrix {
             }
         }
         
-        if (lineNumber < totalNumbers) {
+        if (lineNumber < totalRows) {
             sb.append("\n");
         }
     }

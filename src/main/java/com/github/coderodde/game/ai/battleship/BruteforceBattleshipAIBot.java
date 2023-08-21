@@ -1,13 +1,39 @@
 package com.github.coderodde.game.ai.battleship;
 
+import com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.FocusedFleetDestroyedException;
+
 /**
- * This class implements the brute-force Battleship
+ * This class implements the brute-force Battleship. When requested for a shot
+ * position, it arranges all the remaining ships into all possible arrangements
+ * and returns the point that is the most covered.
+ *
+ * @author Rodion "rodde" Efremov
+ * @version 1.6 (Aug 21, 2023)
+ * @since 1.6 (Aug 21, 2023)
  */
 public class BruteforceBattleshipAIBot implements BattleshipAIBot {
 
+    /**
+     * The game field containing the opponents fleet.
+     */
     private final GameField gameField;
+    
+    /**
+     * The frequency matrix.
+     */
     private final FrequencyCounterMatrix frequencyCounterMatrix;
     
+    /**
+     * If this bot is focused on an ongoing ship, this field refers to the bot
+     * that is localized to shoot in a neighbourhood.
+     */
+    private FocusedBattleshipAIBot focusedBot;
+    
+    /**
+     * Constructs this AI bot.
+     * 
+     * @param gameField the game field.
+     */
     public BruteforceBattleshipAIBot(GameField gameField) {
         this.gameField = gameField;
         this.frequencyCounterMatrix =
@@ -16,8 +42,30 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
                         gameField.getHeight());
     }
 
+    /**
+     * {@inheritDoc } 
+     */
     @Override
     public void shoot(MatrixCoordinates matrixCoordinate) {
+        // Are we focused on a particular ship?
+        if (focusedBot != null) {
+            // ... yes, we are.
+            try {
+                // Let the focused bot shoot.
+                focusedBot.shoot(matrixCoordinate);
+            } catch (FocusedFleetDestroyedException ex) {
+                // Focused ship/fleet is destroyed.
+                focusedBot = null;
+                
+                if (gameField.fleetDestroyed()) {
+                    // Once here, there is no ships left, throw:
+                    throw new OpponentFleetDestroyedException();
+                }
+            }
+                
+            return;
+        }
+        
         gameField.shoot(matrixCoordinate.x,
                         matrixCoordinate.y);
         
@@ -25,39 +73,77 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
                                         matrixCoordinate.y);
         
         if (ship == null) {
+            // The previous shot was a miss, do nothing:
             return;
         }
         
+        // Once here, we have a hit:
         if (gameField.shipIsDestroyed(ship)) {
+            // Once here, we destoroyed an entire ship:
             gameField.removeShip(ship);
+            
+            if (gameField.fleetDestroyed()) {
+                // 'ship' was the last ship standing, game is over:
+                throw new OpponentFleetDestroyedException();
+            }
+        } else {
+            // Once here, we have a hit, yet the ship was not fully destroyed,
+            // focus on it:
+            focusedBot = new FocusedBattleshipAIBot(ship,
+                                                    matrixCoordinate, 
+                                                    gameField);
         }
     }
     
+    /**
+     * Computes the next shot position.
+     * 
+     * @return the next shot position.
+     */
     @Override
-    public MatrixCoordinates computeNextShotLocation(GameField gameField) {
+    public MatrixCoordinates computeNextShotLocation() {
         if (gameField.getSearchFleet().isEmpty()) {
-            // Once here, the AI has found and destroyed all the ships:
-            return null;
+            throw new IllegalStateException(
+                    "The client programmer should have caught the " + 
+                            "OpponentFleetDestroyedException by now.");
         }
         
+        // Reset all the entries of the frequency counter matrix to zero:
         frequencyCounterMatrix.clear();
         
+        // Sort the ships. Longest ship comes first.
         gameField.getSearchFleet().sort(Ship::compareTo);
         
+        // Set each search ship to its starting location (0, 0):
         for (Ship s : gameField.getSearchFleet()) {
             s.setLocation(0, 0);
         }
         
+        // Search over longest ship oriented in horizontal direction:
         putShipHorizontal(0);
+        
+        // Search over longest ship oriented in vertical direction:
         putShipVertical(0);
         
         return frequencyCounterMatrix.getMaximumMatrixCounter();
     }
     
+    /**
+     * Returns the frequency counter matrix.
+     * 
+     * @return the frequency counter matrix.
+     */
     public FrequencyCounterMatrix getFrequencyCounterMatrix() {
         return frequencyCounterMatrix;
     }
     
+    /**
+     * Attempts to set a ship at index {@code shipIndex} in horizontal 
+     * orientation in all possible locations avoiding the cells that are already
+     * shot.
+     * 
+     * @param shipIndex the index of the ship.
+     */
     private void putShipHorizontal(int shipIndex) {
         if (shipIndex == gameField.getSearchFleet().size()) {
             // Once here, all the ships in the fleet are positioned. Print them
@@ -92,6 +178,12 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
         }
     }
     
+    /**
+     * Attempts to set a ship at index {@code shipIndex} in vertical orientation 
+     * in all possible locations avoiding the cells that are already shot.
+     * 
+     * @param shipIndex the index of the ship.
+     */
     private void putShipVertical(int shipIndex) {
         if (shipIndex == gameField.getSearchFleet().size()) {
             // Once here, all the ships in the fleet are positioned. Print them
