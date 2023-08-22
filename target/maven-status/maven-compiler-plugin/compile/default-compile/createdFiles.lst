@@ -2,6 +2,7 @@ com\github\coderodde\game\ai\battleship\Ship.class
 com\github\coderodde\game\ai\battleship\BattleshipAIBot.class
 com\github\coderodde\game\ai\battleship\Ship$1.class
 com\github\coderodde\game\ai\battleship\MatrixCoordinates.class
+com\github\coderodde\game\ai\battleship\OpponentFleetDestroyedException.class
 com\github\coderodde\game\ai\battleship\Demo.class
 com\github\coderodde\game\ai\battleship\BruteforceBattleshipAIBot.class
 com\github\coderodde\game\ai\battleship\RandomBattleshipAIBot.class
@@ -15,5 +16,4 @@ com\github\coderodde\game\ai\battleship\Ship$Orientation.class
 com\github\coderodde\game\ai\battleship\FocusedBattleshipAIBot.class
 com\github\coderodde\game\ai\battleship\GameField$GameFieldCellState.class
 com\github\coderodde\game\ai\battleship\GameField$ShipOverlapsWithExistingFleetException.class
-com\github\coderodde\game\ai\battleship\GameOverException.class
 com\github\coderodde\game\ai\battleship\Ship$ShipCompartment.class

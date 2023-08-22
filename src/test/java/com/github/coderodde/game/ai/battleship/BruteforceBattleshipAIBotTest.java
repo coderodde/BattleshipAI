@@ -93,7 +93,7 @@ public class BruteforceBattleshipAIBotTest {
         gameField.shoot(1, 0);
         
         BruteforceBattleshipAIBot bot =
-                new BruteforceBattleshipAIBot(gameField);
+                new BruteforceBattleshipAIBot(gameField, 0);
         
         bot.computeNextShotLocation();
         

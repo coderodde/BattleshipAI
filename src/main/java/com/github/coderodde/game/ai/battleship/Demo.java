@@ -1,6 +1,7 @@
 package com.github.coderodde.game.ai.battleship;
 
 import com.github.coderodde.game.ai.battleship.GameField.ShipOverlapsWithExistingFleetException;
+import com.github.coderodde.game.ai.battleship.Ship.Orientation;
 import java.util.Random;
 
 /**
@@ -16,6 +17,8 @@ public final class Demo {
     private static final int GAME_FIELD_HEIGHT = 3;
     
     public static void main(String[] args) {
+        benchmarkInitialShot();
+        System.exit(0);
         GameField bruteforceAIGameField = createGameField();
         GameField randomAIGameField = new GameField(bruteforceAIGameField);
         
@@ -123,5 +126,42 @@ public final class Demo {
         return random.nextBoolean() ? 
                 Ship.Orientation.HORIZONTAL :
                 Ship.Orientation.VERTICAL;
+    }
+    
+    private static void benchmarkInitialShot() {
+        GameField gameField = new GameField(10, 10);
+        
+        Ship[] fleet = {
+            new Ship(5, Orientation.HORIZONTAL),
+            new Ship(4, Orientation.VERTICAL),
+            new Ship(3, Orientation.HORIZONTAL),
+            new Ship(3, Orientation.HORIZONTAL),
+        };
+        
+        fleet[0].setLocation(0, 0);
+        fleet[1].setLocation(0, 1);
+        fleet[2].setLocation(2, 3);
+        fleet[3].setLocation(2, 4);
+        
+        for (Ship ship : fleet) {
+            gameField.addShip(ship);
+        }
+        
+        Random random = new Random();
+        
+        for (int i = 0; i < 10; i++) {
+            gameField.shoot(random.nextInt(gameField.getWidth()),
+                            random.nextInt(gameField.getHeight()));
+        }
+        
+        BattleshipAIBot bot = new BruteforceBattleshipAIBot(gameField, 0);
+        
+        long t = System.currentTimeMillis();
+        MatrixCoordinates mc = bot.computeNextShotLocation();
+        
+        System.out.println(
+                "First shot duration: " 
+                        + (System.currentTimeMillis() - t) 
+                        + " milliseconds.");
     }
 }

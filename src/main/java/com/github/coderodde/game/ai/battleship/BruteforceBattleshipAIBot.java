@@ -30,16 +30,36 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
     private FocusedBattleshipAIBot focusedBot;
     
     /**
+     * The random AI. Used to prepopulate the game field with initial closed
+     * cells.
+     */
+    private RandomBattleshipAIBot randomBot;
+    
+    /**
+     * The number of preliminary shots by the random AI bot.
+     */
+    private final int randomShots;
+    
+    /**
+     * The number of random shots made so far.
+     */
+    private int randomShotsMade = 0;
+    
+    /**
      * Constructs this AI bot.
      * 
-     * @param gameField the game field.
+     * @param gameField   the game field.
+     * @param randomShots the number of random shots.
      */
-    public BruteforceBattleshipAIBot(GameField gameField) {
+    public BruteforceBattleshipAIBot(GameField gameField, int randomShots) {
         this.gameField = gameField;
         this.frequencyCounterMatrix =
                 new FrequencyCounterMatrix(
                         gameField.getWidth(),
                         gameField.getHeight());
+        
+        this.randomBot = new RandomBattleshipAIBot(gameField);
+        this.randomShots = randomShots;
     }
 
     /**
@@ -63,7 +83,16 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
                 }
             }
                 
+            randomShotsMade++; // Decrement the number of random shots to go.
             return;
+        }
+        
+        if (randomShotsMade < randomShots) {
+            // Once here, we have no focus and we have random shots left.
+            MatrixCoordinates shotCoordinates = 
+                    randomBot.computeNextShotLocation();
+            
+            
         }
         
         gameField.shoot(matrixCoordinate.x,
