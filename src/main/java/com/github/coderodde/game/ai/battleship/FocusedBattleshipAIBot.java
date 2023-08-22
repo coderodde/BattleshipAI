@@ -138,16 +138,21 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         Ship.Orientation detectedShipOrientation = orientationMap.get(ship);
         
         if (null == detectedShipOrientation) {
+            searchShip.setOrientation(Ship.Orientation.HORIZONTAL);
             searchHorizontally(frequencyCounterMatrix, 
                                shotCoordinates, 
                                searchShip);
             
+            searchShip.setOrientation(Ship.Orientation.VERTICAL);
             searchVertically(frequencyCounterMatrix, 
                              shotCoordinates, 
                              searchShip);
             
             MatrixCoordinates mc = 
                     frequencyCounterMatrix.getMaximumMatrixCounter();
+            
+            this.nextShotMatrixCoordinate.x = mc.x;
+            this.nextShotMatrixCoordinate.y = mc.y;
             
             Ship probeShip = gameField.getShipAt(mc.x, mc.y);
             

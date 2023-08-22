@@ -1,8 +1,8 @@
 package com.github.coderodde.game.ai.battleship;
 
 public final class MatrixCoordinates {
-    public final int x;
-    public final int y;
+    public int x;
+    public int y;
 
     public MatrixCoordinates(int x, int y) {
         this.x = x;

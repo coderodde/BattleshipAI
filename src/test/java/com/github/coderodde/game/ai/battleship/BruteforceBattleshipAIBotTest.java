@@ -17,7 +17,7 @@ public class BruteforceBattleshipAIBotTest {
         gameField.addShip(ship2);
         
         BruteforceBattleshipAIBot bot =
-                new BruteforceBattleshipAIBot(gameField);
+                new BruteforceBattleshipAIBot(gameField, 0);
         
         bot.computeNextShotLocation();
         
@@ -44,7 +44,7 @@ public class BruteforceBattleshipAIBotTest {
         gameField.addShip(ship2);
         
         BruteforceBattleshipAIBot bot =
-                new BruteforceBattleshipAIBot(gameField);
+                new BruteforceBattleshipAIBot(gameField, 0);
         
         bot.computeNextShotLocation();
         
@@ -69,7 +69,7 @@ public class BruteforceBattleshipAIBotTest {
         gameField.addShip(ship1);
         
         BruteforceBattleshipAIBot bot =
-                new BruteforceBattleshipAIBot(gameField);
+                new BruteforceBattleshipAIBot(gameField, 0);
         
         bot.computeNextShotLocation();
         
