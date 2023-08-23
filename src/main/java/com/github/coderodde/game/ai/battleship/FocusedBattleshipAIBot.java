@@ -81,7 +81,6 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
     /**
      * Returns the matrix coordinate of the next shot.
      * 
-     * @param gameField the game field.
      * @return the coordinates of the next favourable shot.
      */
     @Override
@@ -138,12 +137,10 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
         Ship.Orientation detectedShipOrientation = orientationMap.get(ship);
         
         if (null == detectedShipOrientation) {
-            searchShip.setOrientation(Ship.Orientation.HORIZONTAL);
             searchHorizontally(frequencyCounterMatrix, 
                                shotCoordinates, 
                                searchShip);
             
-            searchShip.setOrientation(Ship.Orientation.VERTICAL);
             searchVertically(frequencyCounterMatrix, 
                              shotCoordinates, 
                              searchShip);
@@ -165,9 +162,7 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
                             tryInferOrientation(probeShip, 
                                                 shotCoordinates);
                     
-                    if (orientation != null) {
-                        orientationMap.put(probeShip, orientation);
-                    }
+                    orientationMap.put(probeShip, orientation);
                 }
             }
             
@@ -219,6 +214,8 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
             
             if (shipX < 0) {
                 break;
+            } else if (shipX + searchShip.getLength() > gameField.getWidth()) {
+                continue;
             }
             
             searchShip.setLocation(shipX, shipY);
@@ -246,6 +243,8 @@ public final class FocusedBattleshipAIBot implements BattleshipAIBot {
             
             if (shipY < 0) {
                 break;
+            } else if (shipY + searchShip.getLength() > gameField.getHeight()) {
+                continue;
             }
             
             searchShip.setLocation(shipX, shipY);

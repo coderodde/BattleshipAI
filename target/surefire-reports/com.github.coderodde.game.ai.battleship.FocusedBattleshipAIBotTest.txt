@@ -1,16 +1,16 @@
 -------------------------------------------------------------------------------
 Test set: com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.175 s <<< FAILURE! - in com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest
-com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest.test1  Time elapsed: 0.058 s  <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "com.github.coderodde.game.ai.battleship.Ship.getOrientation()" because "ship" is null
-	at com.github.coderodde.game.ai.battleship.GameField.unprintShipFromShipMatrix(GameField.java:284)
-	at com.github.coderodde.game.ai.battleship.GameField.removeShip(GameField.java:88)
-	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.overlapsFocusedShip(FocusedBattleshipAIBot.java:261)
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 737.806 s <<< FAILURE! - in com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest
+com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest.test1  Time elapsed: 737.681 s  <<< ERROR!
+java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3
+	at com.github.coderodde.game.ai.battleship.FrequencyCounterMatrix.increment(FrequencyCounterMatrix.java:54)
+	at com.github.coderodde.game.ai.battleship.FrequencyCounterMatrix.incrementHorizontalExcept(FrequencyCounterMatrix.java:231)
+	at com.github.coderodde.game.ai.battleship.FrequencyCounterMatrix.incrementShipExcept(FrequencyCounterMatrix.java:97)
 	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.searchHorizontally(FocusedBattleshipAIBot.java:226)
-	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.computeNextShotLocationImpl(FocusedBattleshipAIBot.java:142)
-	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.shoot(FocusedBattleshipAIBot.java:106)
-	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest.test1(FocusedBattleshipAIBotTest.java:32)
+	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.computeNextShotLocationImpl(FocusedBattleshipAIBot.java:140)
+	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.<init>(FocusedBattleshipAIBot.java:78)
+	at com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotTest.test1(FocusedBattleshipAIBotTest.java:21)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:578)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
