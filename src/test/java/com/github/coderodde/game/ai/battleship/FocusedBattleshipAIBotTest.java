@@ -18,8 +18,8 @@ public class FocusedBattleshipAIBotTest {
         gameField.addShip(ship1);
         gameField.addShip(ship2);
         
-        FocusedBattleshipAIBot bot = 
-                new FocusedBattleshipAIBot(
+        FocusedBattleshipAIBotOld bot = 
+                new FocusedBattleshipAIBotOld(
                         ship2, 
                         new MatrixCoordinates(2, 1),
                         gameField);
@@ -28,6 +28,10 @@ public class FocusedBattleshipAIBotTest {
         
         System.out.println(mc = bot.computeNextShotLocation());
 
+        bot.shoot(mc);
+        
+        System.out.println(mc = bot.computeNextShotLocation());
+        
         bot.shoot(mc);
         
         System.out.println(mc = bot.computeNextShotLocation());
@@ -47,8 +51,8 @@ public class FocusedBattleshipAIBotTest {
         
         gameField.shoot(2, 2);
         
-        FocusedBattleshipAIBot bot =
-                new FocusedBattleshipAIBot(
+        FocusedBattleshipAIBotOld bot =
+                new FocusedBattleshipAIBotOld(
                         ship1, 
                         new MatrixCoordinates(2, 2), 
                         gameField);

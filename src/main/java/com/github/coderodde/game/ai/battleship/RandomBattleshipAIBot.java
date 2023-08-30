@@ -17,7 +17,7 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
     private final List<MatrixCoordinates> shotCoordinates;
     private final GameField gameField;
     private final Random random = new Random();
-    private FocusedBattleshipAIBot focusedBot;
+    private FocusedBattleshipAIBotOld focusedBot;
     
     public RandomBattleshipAIBot(GameField gameField) {
         this.gameField = gameField;
@@ -54,7 +54,7 @@ public final class RandomBattleshipAIBot implements BattleshipAIBot {
         Ship ship = gameField.getShipAt(nextShotCoordinates);
         
         if (ship != null) {
-            focusedBot = new FocusedBattleshipAIBot(ship, 
+            focusedBot = new FocusedBattleshipAIBotOld(ship, 
                                                     nextShotCoordinates, 
                                                     gameField);
         }

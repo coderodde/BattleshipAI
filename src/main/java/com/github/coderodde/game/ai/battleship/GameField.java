@@ -151,6 +151,30 @@ public final class GameField {
         return opponentFleet.isEmpty();
     }
     
+    boolean pointIsWithinGameField(MatrixCoordinates mc) {
+        if (mc.x < 0 || mc.y < 0) {
+            return false;
+        }
+        
+        if (mc.x >= width || mc.y >= height) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    List<Ship> getStandingOpponentFleet() {
+        List<Ship> standingOpponentFleet = new ArrayList<>();
+        
+        for (Ship ship : opponentFleet) {
+            if (!shipIsDestroyed(ship)) {
+                standingOpponentFleet.add(ship);
+            }
+        }
+        
+        return standingOpponentFleet;
+    }
+    
     private void initializeGameFieldCellStateMatrix() {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {

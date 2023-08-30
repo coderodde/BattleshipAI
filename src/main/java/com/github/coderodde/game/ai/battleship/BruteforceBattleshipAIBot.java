@@ -1,6 +1,6 @@
 package com.github.coderodde.game.ai.battleship;
 
-import com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBot.FocusedFleetDestroyedException;
+import com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotOld.FocusedFleetDestroyedException;
 
 /**
  * This class implements the brute-force Battleship. When requested for a shot
@@ -27,7 +27,7 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
      * If this bot is focused on an ongoing ship, this field refers to the bot
      * that is localized to shoot in a neighbourhood.
      */
-    private FocusedBattleshipAIBot focusedBot;
+    private FocusedBattleshipAIBotOld focusedBot;
     
     /**
      * The random AI. Used to prepopulate the game field with initial closed
@@ -118,7 +118,7 @@ public class BruteforceBattleshipAIBot implements BattleshipAIBot {
         } else {
             // Once here, we have a hit, yet the ship was not fully destroyed,
             // focus on it:
-            focusedBot = new FocusedBattleshipAIBot(ship,
+            focusedBot = new FocusedBattleshipAIBotOld(ship,
                                                     matrixCoordinate, 
                                                     gameField);
         }
