@@ -7,13 +7,14 @@ com\github\coderodde\game\ai\battleship\Demo.class
 com\github\coderodde\game\ai\battleship\BruteforceBattleshipAIBot.class
 com\github\coderodde\game\ai\battleship\RandomBattleshipAIBot.class
 com\github\coderodde\game\ai\battleship\FrequencyCounterMatrix$1.class
-com\github\coderodde\game\ai\battleship\FocusedBattleshipAIBot$1.class
-com\github\coderodde\game\ai\battleship\FocusedBattleshipAIBot$FocusedFleetDestroyedException.class
 com\github\coderodde\game\ai\battleship\GameField$1.class
 com\github\coderodde\game\ai\battleship\GameField.class
+com\github\coderodde\game\ai\battleship\FocusedBattleshipAIBotOld$1.class
 com\github\coderodde\game\ai\battleship\FrequencyCounterMatrix.class
 com\github\coderodde\game\ai\battleship\Ship$Orientation.class
 com\github\coderodde\game\ai\battleship\FocusedBattleshipAIBot.class
 com\github\coderodde\game\ai\battleship\GameField$GameFieldCellState.class
+com\github\coderodde\game\ai\battleship\FocusedBattleshipAIBotOld.class
+com\github\coderodde\game\ai\battleship\FocusedFleetDestroyedException.class
 com\github\coderodde\game\ai\battleship\GameField$ShipOverlapsWithExistingFleetException.class
 com\github\coderodde\game\ai\battleship\Ship$ShipCompartment.class

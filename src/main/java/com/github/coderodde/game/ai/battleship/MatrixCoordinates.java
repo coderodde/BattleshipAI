@@ -18,4 +18,18 @@ public final class MatrixCoordinates {
     public String toString() {
         return "[x = " + x + ", y = " + y + "]";
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        MatrixCoordinates other = (MatrixCoordinates) o;
+        return x == other.x && y == other.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 61 * hash + this.x;
+        hash = 61 * hash + this.y;
+        return hash;
+    }
 }

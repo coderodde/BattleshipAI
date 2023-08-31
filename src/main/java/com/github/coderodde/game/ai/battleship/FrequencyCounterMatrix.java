@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * This class represents the frequency counter matrix.
@@ -201,6 +202,55 @@ public final class FrequencyCounterMatrix {
     private void incrementHorizontal(Ship ship) {
         for (int i = 0; i < ship.getLength(); i++) {
             increment(ship.getX() + i, ship.getY());
+        }
+    }
+    
+    void incrementWithExclusion(
+            Ship ship,
+            Set<MatrixCoordinates> excludedPoints) {
+        
+        switch (ship.getOrientation()) {
+            case HORIZONTAL -> {
+                incrementHorizontalWithExclusion(ship, excludedPoints);
+                return;
+            }
+                
+            case VERTICAL -> {
+                incrementVerticalWithExclusion(ship, excludedPoints);
+                return;
+            }
+                
+            default -> throw new IllegalStateException("Should not get here.");
+        }
+    }
+    
+    private void incrementHorizontalWithExclusion(
+            Ship ship,
+            Set<MatrixCoordinates> excludedPoints) {
+        
+        MatrixCoordinates mc = new MatrixCoordinates(-1, ship.getY());
+        
+        for (int i = 0; i < ship.getLength(); i++) {
+            mc.x = ship.getX() + i;
+            
+            if (!excludedPoints.contains(mc)) {
+                increment(ship.getX() + i, ship.getY());
+            }
+        }
+    }
+    
+    private void incrementVerticalWithExclusion(
+            Ship ship,
+            Set<MatrixCoordinates> excludedPoints) {
+        
+        MatrixCoordinates mc = new MatrixCoordinates(ship.getX(), -1);
+        
+        for (int i = 0; i < ship.getLength(); i++) {
+            mc.y = ship.getY() + i;
+            
+            if (!excludedPoints.contains(mc)) {
+                increment(ship.getX(), ship.getY() + i);
+            }
         }
     }
     

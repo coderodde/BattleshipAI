@@ -1,7 +1,5 @@
 package com.github.coderodde.game.ai.battleship;
 
-import com.github.coderodde.game.ai.battleship.FocusedBattleshipAIBotOld.FocusedFleetDestroyedException;
-
 /**
  * This class implements the brute-force Battleship. When requested for a shot
  * position, it arranges all the remaining ships into all possible arrangements
